@@ -19,18 +19,9 @@ export const createFolder = (req, res) => {
   );
 };
 
-// Uniche colonne modificabili tramite PUT, per evitare SQL injection
-// sui nomi di colonna a partire da req.body.
-const UPDATABLE_FOLDER_FIELDS = ['name', 'color'];
-
 export const updateFolder = (req, res) => {
   const { id } = req.params;
-  const updates = {};
-  for (const field of UPDATABLE_FOLDER_FIELDS) {
-    if (Object.prototype.hasOwnProperty.call(req.body, field)) {
-      updates[field] = req.body[field];
-    }
-  }
+  const updates = req.body;
   const fields = Object.keys(updates);
   if (fields.length === 0) return res.status(400).json({ error: 'Nessun campo specificato per l\'aggiornamento' });
 

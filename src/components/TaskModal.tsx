@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { X, Trash2 } from 'lucide-react'
-import type { Attachment, Task, TaskPriority, TaskStatus } from '../types'
+import type { Task, TaskPriority, TaskStatus } from '../types'
 import {
   PRIORITY_LABELS,
   STATUS_LABELS,
@@ -20,7 +20,7 @@ const emptyForm = {
   description: '',
   notes: '',
   links: '',
-  attachments: [] as Attachment[],
+  attachments: [],
   status: 'todo' as TaskStatus,
   priority: 'medium' as TaskPriority,
   assigneeId: '' as string,

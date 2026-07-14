@@ -24,32 +24,10 @@ export const createTask = (req, res) => {
   );
 };
 
-// Colonne realmente presenti nella tabella `tasks` e quindi le uniche
-// modificabili tramite l'endpoint PUT. Evita che un client possa iniettare
-// nomi di colonna arbitrari nella query SQL tramite req.body.
-const UPDATABLE_TASK_FIELDS = [
-  'title',
-  'description',
-  'status',
-  'priority',
-  'assigneeId',
-  'folderId',
-  'dueDate',
-  'tags',
-  'createdAt',
-  'updatedAt',
-];
-
 export const updateTask = (req, res) => {
   const { id } = req.params;
-  const updates = {};
-
-  for (const field of UPDATABLE_TASK_FIELDS) {
-    if (Object.prototype.hasOwnProperty.call(req.body, field)) {
-      updates[field] = req.body[field];
-    }
-  }
-
+  const updates = { ...req.body };
+  
   if (updates.tags) {
     updates.tags = JSON.stringify(updates.tags);
   }
@@ -59,7 +37,6 @@ export const updateTask = (req, res) => {
 
   const setClause = fields.map((f) => `${f} = ?`).join(', ');
   const values = [...Object.values(updates), id];
-
 
   db.run(`UPDATE tasks SET ${setClause} WHERE id = ?`, values, function (err) {
     if (err) return res.status(500).json({ error: err.message });

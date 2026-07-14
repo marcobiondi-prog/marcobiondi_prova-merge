@@ -63,16 +63,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           fetch(`${API_BASE}/folders`).then((r) => r.json()),
         ])
 
-        // Il database non ha colonne per notes/links/attachments: l'API le
-        // restituisce come assenti, quindi tipizziamo la risposta di
-        // conseguenza prima di applicare i valori di default.
-        type TaskFromApi = Omit<Task, 'notes' | 'links' | 'attachments'> & {
-          notes?: string
-          links?: string[]
-          attachments?: Task['attachments']
-        }
-
-        const normalizedTasks = (resTasks as TaskFromApi[]).map((task) => ({
+        const normalizedTasks = (resTasks as Task[]).map((task) => ({
           ...task,
           notes: task.notes ?? '',
           links: task.links ?? [],
@@ -89,10 +80,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     load()
   }, [])
 
-  const addTask = useCallback((
-    task: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'notes' | 'links' | 'attachments'> &
-      Partial<Pick<Task, 'notes' | 'links' | 'attachments'>>,
-  ) => {
+  const addTask = useCallback((task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => {
     const now = new Date().toISOString()
     const newTask: Task = {
       notes: '',
